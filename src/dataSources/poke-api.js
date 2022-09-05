@@ -1,4 +1,4 @@
-import { RESTDataSource } from "apollo-datasource-rest";
+const { RESTDataSource } = require("apollo-datasource-rest")
 
 
 class PokeAPI extends RESTDataSource {
@@ -6,6 +6,16 @@ class PokeAPI extends RESTDataSource {
         super();
         this.baseURL = 'https://pokeapi.co/api/v2/'
     }
+
+    getAllPokemon(limit = 20, offset = 0)
+    {
+        return this.get(`pokemon?limit=${limit}&offset=${offset}`)
+    }
+
+    getPokemonByName(name)
+    {
+        return this.get(`pokemon/${name}`)
+    }
 }
 
-export default PokeAPI;
+module.exports = PokeAPI;
