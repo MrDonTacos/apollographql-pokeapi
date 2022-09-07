@@ -30,8 +30,21 @@ const typeDefs = gql`
         id: Int
         "Pokemon's name!"
         name: String
-        "Pokemon's weight in KG."
+        "Pokemon's weight in hectograms."
         weight: Int
+        "Pokemon's front default sprite"
+        image: String
+        "Pokemon's height in decimetres"
+        height: Int
+        "A list of abilities this pokemon probably has "
+        abilities: [PokemonAbility]
+    }
+
+    type PokemonAbility {
+        "Pokemon's ability Id"
+        id: Int
+        "Pokemon's ability name"
+        name: String
     }
 `
 
