@@ -41,8 +41,6 @@ const typeDefs = gql`
     }
 
     type PokemonAbility {
-        "Pokemon's ability Id"
-        id: Int
         "Pokemon's ability name"
         name: String
     }

@@ -16,7 +16,6 @@ const resolvers = {
         image: ({sprites}) => sprites.front_default
     },
     PokemonAbility: {
-        id: ({ability}) => ability.id,
         name: ({ability}) => ability.name
     }
 }
