@@ -1,61 +1,46 @@
 import { Field, ID, Int, ObjectType } from "type-graphql";
 
-
-@ObjectType()
+@ObjectType({description: "The favorite object type! Give us all the information about our pokemon"})
 export class Pokemon {
-    "Pokemon's ID"
-    @Field(type => Int)
+    @Field(type => Int, {description: "Pokemon's ID"})
     id: number
-    "Pokemon's name!"
-    @Field()
+    @Field({description: "Pokemon's name!"})
     name: String
-    "Pokemon's weight in hectograms."
-    @Field()
+    @Field({description: "Pokemon's weight in hectograms."})
     weight: number
-    "Pokemon's front default sprite"
-    @Field()
+    @Field({description: "Pokemon's front default sprite"})
     image: String
-    "Pokemon's height in decimetres"
-    @Field()
+    @Field({description: "Pokemon's height in decimetres"})
     height: number
-    "A list of abilities this pokemon probably has "
-    @Field(type => [PokemonAbility])
+    @Field(type => [PokemonAbility], {description: "A list of abilities this pokemon probably has"})
     abilities: PokemonAbility[]
 }
 
-@ObjectType()
+@ObjectType({description: "Object which give us the name to fetch the pokemon and other relevant informations"})
 export class PokemonResource {
-    "Pokemons name"
-    @Field()
+    @Field({description: "Pokemons name"})
     name: String
-    "API Url to look for the pokemon"
-    @Field()
+    @Field({description: "API Url to look for the pokemon"})
     url: String
-    "Pokemon's consulted via name"
-    @Field()
+    @Field({description: "Pokemon's consulted via name"})
     pokemon: Pokemon
 }
 
-@ObjectType()
+@ObjectType({description: "Entry object wich give us the global information about the poke-api pokemons resources, like total of pokemons and filters"})
 export class PokemonResponse {
-    "Total number of Pokemons in the Database"
-    @Field(type => ID)
+    @Field(type => ID, {description: "Total number of Pokemons in the Database"})
     count: number
-    "Url for next page of pokemons"
-    @Field()
+    @Field({description: "Url for next page of pokemons"})
     next: String 
-    "Url for previous page of pokemons"
-    @Field()
+    @Field({description: "Url for previous page of pokemons"})
     previous: String
-    "List of Pokemons and their url ID"
-    @Field(type => [PokemonResource], {name: "pokemonResource"})
+    @Field(type => [PokemonResource], {name: "pokemonResource", description: "List of Pokemons and their url ID"})
     results : PokemonResource[]
 }
 
-@ObjectType() 
+@ObjectType({description: "An object that contains the list of abilities from a pokemon"}) 
 export class PokemonAbility {
-    "Pokemon's ability name"
-    @Field({nullable: true})
+    @Field({nullable: true, description: "Pokemon's ability name"})
     name: String
     ability: Ability
 }
