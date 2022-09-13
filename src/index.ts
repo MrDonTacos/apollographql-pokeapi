@@ -2,13 +2,14 @@ import { ApolloServer } from "apollo-server";
 import PokeAPI from './dataSources/poke-api-ts'
 import 'reflect-metadata'
 import { buildSchema } from 'type-graphql';
-import {PokemonResolver ,AbilitiesResolver} from './resolvs/second-resolvers'
+import {PokemonResponseResolver, AbilitiesResolver, PokemonResourceResolver, PokemonResolver} from './resolvs/second-resolvers'
 
 async function bootstrap() 
 {
 
     const schema = await buildSchema({
-        resolvers: [PokemonResolver, AbilitiesResolver],
+        resolvers: [PokemonResponseResolver, AbilitiesResolver ,PokemonResourceResolver, PokemonResolver],
+        nullableByDefault: true
     })
 
     const server = new ApolloServer({

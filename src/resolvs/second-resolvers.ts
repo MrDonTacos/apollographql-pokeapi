@@ -1,12 +1,17 @@
-import { Arg, Ctx, FieldResolver, Query, Resolver, ResolverInterface, Root } from "type-graphql";
-import {Pokemon, PokemonAbility}  from "../classes/Pokemon"
+import { Arg, Args, Ctx, Field, FieldResolver, Query, Resolver, ResolverInterface, Root } from "type-graphql";
+import { skipTakeArgs } from "../classes/helpers/skip-take";
+import {Pokemon, PokemonAbility, PokemonResource, PokemonResponse}  from "../classes/Pokemon"
 import { Context } from "../Context";
 
-@Resolver()
-export class PokemonResolver{    
+@Resolver(() => PokemonResponse)
+export class PokemonResponseResolver{    
+    @Query(returns => PokemonResponse)
+    async allPokemons(@Args() {limit, offset}: skipTakeArgs, @Ctx() context: Context) {
+        const result = await context.dataSources.pokeApi.getAllPokemon(limit, offset);
+        return await context.dataSources.pokeApi.getAllPokemon(limit, offset);
+    }
     @Query(returns => Pokemon)
     async pokemon(@Arg("name") name: String, @Ctx() context: Context) {
-        
         return await context.dataSources.pokeApi.getPokemonByName(name);
     }
 }
@@ -17,8 +22,23 @@ export class AbilitiesResolver implements ResolverInterface<PokemonAbility>{
     name(@Root() pokemonAbility: PokemonAbility)
     {   
         const {ability} = pokemonAbility;
-        console.log(pokemonAbility)
-        console.log(pokemonAbility.ability)
         return ability.name;
     }
+}
+
+@Resolver(of => PokemonResource)
+export class PokemonResourceResolver implements ResolverInterface<PokemonResource>{
+    @FieldResolver()
+    async pokemon(@Root() {name}: PokemonResource, @Ctx() context: Context): Promise<Pokemon>
+    {
+        return await context.dataSources.pokeApi.getPokemonByName(name)
+    }
+}
+
+@Resolver(of => Pokemon)
+export class PokemonResolver implements ResolverInterface<Pokemon> {
+    @FieldResolver()
+    image(@Root() {sprites}: any): String {
+        return sprites.front_default;
+    }  
 }

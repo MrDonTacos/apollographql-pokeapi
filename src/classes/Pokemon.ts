@@ -1,4 +1,5 @@
-import { Field, Int, ObjectType } from "type-graphql";
+import { Field, ID, Int, ObjectType } from "type-graphql";
+
 
 @ObjectType()
 export class Pokemon {
@@ -20,6 +21,35 @@ export class Pokemon {
     "A list of abilities this pokemon probably has "
     @Field(type => [PokemonAbility])
     abilities: PokemonAbility[]
+}
+
+@ObjectType()
+export class PokemonResource {
+    "Pokemons name"
+    @Field()
+    name: String
+    "API Url to look for the pokemon"
+    @Field()
+    url: String
+    "Pokemon's consulted via name"
+    @Field()
+    pokemon: Pokemon
+}
+
+@ObjectType()
+export class PokemonResponse {
+    "Total number of Pokemons in the Database"
+    @Field(type => ID)
+    count: number
+    "Url for next page of pokemons"
+    @Field()
+    next: String 
+    "Url for previous page of pokemons"
+    @Field()
+    previous: String
+    "List of Pokemons and their url ID"
+    @Field(type => [PokemonResource], {name: "pokemonResource"})
+    results : PokemonResource[]
 }
 
 @ObjectType() 
