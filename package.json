@@ -4,7 +4,7 @@
   "description": "An Apollo Graphql to consume PokeApi",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/index"
+    "start": "nodemon src/index.ts"
   },
   "repository": {
     "type": "git",
@@ -19,7 +19,13 @@
   "dependencies": {
     "apollo-datasource-rest": "^3.7.0",
     "apollo-server": "^3.10.2",
-    "graphql": "^16.6.0"
+    "class-validator": "^0.13.2",
+    "express-graphql": "^0.12.0",
+    "graphql": "15.7.2",
+    "reflect-metadata": "^0.1.13",
+    "ts-node": "^10.9.1",
+    "type-graphql": "^1.1.1",
+    "typescript": "^4.8.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.19"
