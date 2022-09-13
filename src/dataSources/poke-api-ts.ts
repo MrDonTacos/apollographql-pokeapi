@@ -14,7 +14,6 @@ export default class PokeAPI extends RESTDataSource {
 
     async getPokemonByName(name): Promise<Pokemon>
     {
-        console.log("Reach pokemon by name")
         return this.get(`pokemon/${name}`)
     }
 }
