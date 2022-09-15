@@ -5,9 +5,9 @@ export class UserEntity {
     @PrimaryGeneratedColumn()
     ID: number
     @Column()
-    user: String
+    user: string
     @Column()
-    plain_password: String
+    plain_password: string
     @Column()
-    hash_password: String
+    hash_password: string
 }
