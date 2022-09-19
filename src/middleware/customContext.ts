@@ -3,4 +3,5 @@ export default class CustomContext {
     token: string
     password: string
     role: string
+    body: any
 }
