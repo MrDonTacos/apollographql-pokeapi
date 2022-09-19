@@ -4,7 +4,7 @@ import {Pokemon, PokemonAbility, PokemonResource, PokemonResponse}  from "../cla
 import { Context } from "../Context";
 
 @Resolver(() => PokemonResponse)
-export class PokemonResponseResolver{   
+export class PokemonResponseResolver{    
     @Query(returns => PokemonResponse, {description: "A query designed to retreive a list of pokemons based on skip/limit"})
     async allPokemons(@Args() {limit, offset}: skipTakeArgs, @Ctx() context: Context) {
         const result = await context.dataSources.pokeApi.getAllPokemon(limit, offset);
