@@ -4,22 +4,28 @@ import { UserInDto } from "../classes/dto/UserInDto";
 import { User } from "../classes/User";
 import UserDataSource from "../dataSources/UserDataSource";
 import { UserEntity } from "../entity/UserEntity";
+import { UserRepository } from "../dataSources/repository/UserRepository";
+import {Inject, Service} from 'typedi'
 const jwt =  require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
+@Service()
 @Resolver(of => User)
 export class UserResolver {
+    private readonly _userRepository: Repository<UserEntity>;
+    constructor(userRepository: UserRepository)
+    {
+        this._userRepository = userRepository.getUser() 
+    }
     @Authorized()
     @Query(() => User, {description: "Query to fetch current user data, you need to be the user who is consulting the data to use this query"})
     async user(@Arg("username") username: string, @Arg("password") password: string) {
-        const userRepository = UserDataSource.getRepository(UserEntity);
-        return await userRepository.findOneBy({user: username})
+        return await this._userRepository.findOneBy({user: username})
     }
     @Authorized()
     @Query(() => [User], {description: "Query to bring all the users, you need to be an admin user to use this query"})
     async users() {
-        const userRepository = UserDataSource.getRepository(UserEntity)
-        return userRepository.query("SELECT * FROM users");
+        return this._userRepository.query("SELECT * FROM users");
     }
 
     @Mutation(() => User, {description: "Mutation to create an user based on a username and a plain text password."})
@@ -27,13 +33,12 @@ export class UserResolver {
         const {username, plain_password} = userIn;
         try
         {
-            const userRepository = UserDataSource.getRepository(UserEntity)
-            const _user = userRepository.create({
+            const _user = this._userRepository.create({
                 user: username,
                 plain_password: plain_password,
                 hash_password: await bcrypt.hash(plain_password, 8)
             });
-            const _save = await userRepository.save(_user);
+            const _save = await this._userRepository.save(_user);
             return _save;
         }
         catch(err)
@@ -47,8 +52,7 @@ export class UserResolver {
     async deleteUser(@Arg("ID") ID: number): Promise<Boolean> {
         try
         {
-            const userRepository = UserDataSource.getRepository(UserEntity)
-            await userRepository.delete({ID: ID})
+            await this._userRepository.delete({ID: ID})
             return true;
         }
         catch (err)
@@ -62,8 +66,7 @@ export class UserResolver {
     async updateUser(@Args() user: UserInDto) {
         try {
             const {ID, username, plain_password} = user;
-            const userRepository = UserDataSource.getRepository(UserEntity)
-            const _updateEntity = await userRepository.update({ID: ID}, {user: username, plain_password: plain_password}) 
+            const _updateEntity = await this._userRepository.update({ID: ID}, {user: username, plain_password: plain_password}) 
             console.log(_updateEntity)
             return _updateEntity
         } catch (error) {
@@ -74,8 +77,7 @@ export class UserResolver {
 
     @Mutation(() => User)
     async login(@Arg("username") username: string, @Arg("password") password: string) {
-        const userRepository = UserDataSource.getRepository(UserEntity)
-        let _user = await userRepository.findOne({where: {user: username}})
+        let _user = await this._userRepository.findOne({where: {user: username}})
         let isUserValid = await bcrypt.compare(password, _user.hash_password)
         if(!isUserValid)
             return false;

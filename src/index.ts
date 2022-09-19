@@ -2,11 +2,13 @@ import { ApolloServer } from "apollo-server-express";
 import PokeAPI from './dataSources/poke-api-ts'
 import 'reflect-metadata'
 import { buildSchema } from 'type-graphql';
-import {PokemonResponseResolver, AbilitiesResolver, PokemonResourceResolver, PokemonResolver} from './resolvs/second-resolvers'
-import { UserResolver } from "./resolvs/user-resolver";
+import {resolvers} from './resolvs/index'
 import UserDataSource from './dataSources/UserDataSource'
 import * as express from 'express'
 import { customAuthChecker } from "./middleware/customAuthChecker";
+import CustomContext from "./middleware/customContext";
+import * as jwt from 'jsonwebtoken'
+import {Container} from 'typedi'
 
 async function bootstrap() 
 {
@@ -14,9 +16,10 @@ async function bootstrap()
     const path = "/graphql";
 
     const schema = await buildSchema({
-        resolvers: [PokemonResponseResolver, AbilitiesResolver ,PokemonResourceResolver, PokemonResolver, UserResolver],
+        resolvers,
         nullableByDefault: true,
-        authChecker: customAuthChecker
+        authChecker: customAuthChecker,
+        container: Container
     })
 
     const server = new ApolloServer({
@@ -26,14 +29,18 @@ async function bootstrap()
         }),
         context: ({req}) => {
             const context = {
-                req,
-                user: req.user
+                body: req.body,
+                user: req.headers
             };
             return context
         }
     })
 
-    server.applyMiddleware({app})
+    app.use(path, express.json())
+
+
+    await server.start();
+    server.applyMiddleware({app, path})
 
     UserDataSource.initialize()
     .then(() => {
