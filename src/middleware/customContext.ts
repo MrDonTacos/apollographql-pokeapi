@@ -4,4 +4,6 @@ export default class CustomContext {
     password: string
     role: string
     body: any
+    auth: string
+    isAllowed: boolean
 }

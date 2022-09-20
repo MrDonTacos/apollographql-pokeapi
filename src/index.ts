@@ -30,7 +30,8 @@ async function bootstrap()
         context: ({req}) => {
             const context = {
                 body: req.body,
-                user: req.headers
+                user: req.headers,
+                auth: req.headers.authorization
             };
             return context
         }
